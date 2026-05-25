@@ -179,41 +179,28 @@ public class UserDao {
         try {
             StringBuilder sql = new StringBuilder();
 
-            if(user.getPassword().isEmpty()) {
-	            sql.append("UPDATE users SET ");
-	            sql.append("    account = ?, ");
-	            sql.append("    name = ?, ");
-	            sql.append("    email = ?, ");
-	            sql.append("    description = ?, ");
-	            sql.append("    updated_date = CURRENT_TIMESTAMP ");
-	            sql.append("WHERE id = ?");
-
-	            ps = connection.prepareStatement(sql.toString());
-
-	            ps.setString(1, user.getAccount());
-	            ps.setString(2, user.getName());
-	            ps.setString(3, user.getEmail());
-	            ps.setString(4, user.getDescription());
-	            ps.setInt(5, user.getId());
-            } else {
             	sql.append("UPDATE users SET ");
 	            sql.append("    account = ?, ");
 	            sql.append("    name = ?, ");
 	            sql.append("    email = ?, ");
-	            sql.append("    password = ?, ");
 	            sql.append("    description = ?, ");
 	            sql.append("    updated_date = CURRENT_TIMESTAMP ");
-	            sql.append("WHERE id = ?");
+	            if(!(user.getPassword().isEmpty())){
+	            	sql.append(",   password = ? ");
+	            }
+	            sql.append("	WHERE id = ?");
 
 	            ps = connection.prepareStatement(sql.toString());
 
-	            ps.setString(1, user.getAccount());
-	            ps.setString(2, user.getName());
-	            ps.setString(3, user.getEmail());
-	            ps.setString(4, user.getPassword());
-	            ps.setString(5, user.getDescription());
-	            ps.setInt(6, user.getId());
-            }
+	            int i = 1;
+	            ps.setString(i++, user.getAccount());
+	            ps.setString(i++, user.getName());
+	            ps.setString(i++, user.getEmail());
+	            ps.setString(i++, user.getDescription());
+	            if(!(user.getPassword().isEmpty())){
+	            	ps.setString(i++, user.getPassword());
+	            }
+	            ps.setInt(i++, user.getId());
 
             int count = ps.executeUpdate();
             if (count == 0) {
