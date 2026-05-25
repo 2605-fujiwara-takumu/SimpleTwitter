@@ -119,13 +119,20 @@ public class UserService {
 
         Connection connection = null;
         try {
-            // パスワード暗号化
-            String encPassword = CipherUtil.encrypt(user.getPassword());
-            user.setPassword(encPassword);
+        	if(user.getPassword().isEmpty()) {
+        		connection = getConnection();
+                new UserDao().update(connection, user);
+                commit(connection);
+        	} else {
+        		// パスワード暗号化
+                String encPassword = CipherUtil.encrypt(user.getPassword());
+                user.setPassword(encPassword);
 
-            connection = getConnection();
-            new UserDao().update(connection, user);
-            commit(connection);
+        		connection = getConnection();
+                new UserDao().update(connection, user);
+                commit(connection);
+        	}
+
         } catch (RuntimeException e) {
             rollback(connection);
     	  log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
