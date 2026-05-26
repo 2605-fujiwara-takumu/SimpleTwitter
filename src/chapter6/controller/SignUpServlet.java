@@ -92,25 +92,30 @@ public class SignUpServlet extends HttpServlet {
         String password = user.getPassword();
         String email = user.getEmail();
 
-        if (!StringUtils.isEmpty(name) && (20 < name.length())) {
-            errorMessages.add("名前は20文字以下で入力してください");
-        }
+        	if (!StringUtils.isEmpty(name) && (20 < name.length())) {
+                errorMessages.add("名前は20文字以下で入力してください");
+            }
 
-        if (StringUtils.isEmpty(account)) {
-            errorMessages.add("アカウント名を入力してください");
-        } else if (20 < account.length()) {
-            errorMessages.add("アカウント名は20文字以下で入力してください");
-        }
+            if (StringUtils.isEmpty(account)) {
+                errorMessages.add("アカウント名を入力してください");
+            } else if (20 < account.length()) {
+                errorMessages.add("アカウント名は20文字以下で入力してください");
+            }
 
-        if (StringUtils.isEmpty(password)) {
-            errorMessages.add("パスワードを入力してください");
-        }
+            if (StringUtils.isEmpty(password)) {
+                errorMessages.add("パスワードを入力してください");
+            }
 
-        if (StringUtils.isEmpty(email)) {
-		errorMessages.add("メールアドレスを入力してください");
-	  } else if (!StringUtils.isEmpty(email) && (50 < email.length())) {
-            errorMessages.add("メールアドレスは50文字以下で入力してください");
-        }
+            if (StringUtils.isEmpty(email)) {
+    		errorMessages.add("メールアドレスを入力してください");
+            } else if (!StringUtils.isEmpty(email) && (50 < email.length())) {
+                errorMessages.add("メールアドレスは50文字以下で入力してください");
+            }
+
+            User test = new UserService().select(account);
+            if(test != null) {
+                errorMessages.add("すでに存在するアカウントです");
+            }
 
         if (errorMessages.size() != 0) {
             return false;
