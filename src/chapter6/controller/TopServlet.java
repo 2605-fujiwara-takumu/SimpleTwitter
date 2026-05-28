@@ -42,20 +42,17 @@ public class TopServlet extends HttpServlet {
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-        boolean isShowMessageForm = false;
+        boolean isShowFunction = false;
         User user = (User) request.getSession().getAttribute("loginUser");
         if (user != null) {
-            isShowMessageForm = true;
+            isShowFunction = true;
         }
 
         String userId = request.getParameter("user_id");
         List<UserMessage> messages = new MessageService().select(userId);
 
         request.setAttribute("messages", messages);
-        request.setAttribute("isShowMessageForm", isShowMessageForm);
-
-
-
+        request.setAttribute("isShowFunction", isShowFunction);
 
         request.getRequestDispatcher("/top.jsp").forward(request, response);
     }

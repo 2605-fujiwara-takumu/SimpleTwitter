@@ -4,6 +4,7 @@ import static chapter6.utils.CloseableUtil.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,5 +63,101 @@ public class MessageDao {
         } finally {
             close(ps);
         }
+    }
+
+    public String selectText(Connection connection, String editMessageId) {
+    	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
+    	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
+
+    	PreparedStatement ps = null;
+    	try {
+    		String sql = " SELECT text FROM messages WHERE id= ?";
+    		String text = "";
+
+    		ps = connection.prepareStatement(sql);
+            ps.setString(1,editMessageId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                text = rs.getString("text");
+            }
+
+            return text;
+        } catch (SQLException e) {
+		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+            throw new SQLRuntimeException(e);
+        } finally {
+            close(ps);
+        }
+    }
+
+    public void delete(Connection connection, String deleteMessageId) {
+    	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
+    	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
+
+    	PreparedStatement ps = null;
+    	try {
+    		String sql = "DELETE FROM messages WHERE id = ?";
+
+    		ps = connection.prepareStatement(sql);
+            ps.setString(1,deleteMessageId);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+            throw new SQLRuntimeException(e);
+        } finally {
+            close(ps);
+        }
+
+    }
+
+    public void edit(Connection connection, Message editMessage) {
+    	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
+    	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
+
+    	PreparedStatement ps = null;
+    	try {
+    		String sql = "UPDATE messages SET text = ? WHERE id = ?";
+
+    		ps = connection.prepareStatement(sql);
+            ps.setString(1, editMessage.getText());
+            ps.setInt(2, editMessage.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+            throw new SQLRuntimeException(e);
+        } finally {
+            close(ps);
+        }
+    }
+
+    public boolean isValidId(Connection connection, String messageId) {
+    	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
+    	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
+
+    	PreparedStatement ps = null;
+    	boolean result = false;
+    	try {
+    		String sql = "SELECT id FROM messages WHERE id= ?";
+
+    		ps = connection.prepareStatement(sql);
+            ps.setString(1, messageId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+            	result = true;
+            }
+
+        } catch (SQLException e) {
+		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+            throw new SQLRuntimeException(e);
+        } finally {
+            close(ps);
+        }
+    	return result;
     }
 }

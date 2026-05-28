@@ -42,7 +42,7 @@
 			</c:if>
 			<br>
 			<div class="form-area">
-			    <c:if test="${ isShowMessageForm }">
+			    <c:if test="${ isShowFunction }">
 			        <form action="message" method="post">
 			            いま、どうしてる？<br />
 			            <textarea name="text" cols="100" rows="5" class="tweet-box"></textarea>
@@ -63,8 +63,18 @@
 			                </span>
 			                <span class="name"><c:out value="${message.name}" /></span>
 			            </div>
-			            <div class="text"><c:out value="${message.text}" /></div>
+			            <pre class="text"><c:out value="${message.text}" /></pre>
 			            <div class="date"><fmt:formatDate value="${message.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" /></div>
+			            <c:if test="${ message.userId == loginUser.id}">
+				            <form action="deleteMessage" method="post"><br />
+	                			<input name="deleteMessageId" value="${message.id}" id="id" type="hidden"/>
+	                			<input type="submit" value="削除" />
+	                		</form>
+	                		<form action="edit" method="get"><br />
+	                			<input name="editMessageId" value="${message.id}" id="id" type="hidden"/>
+	                			<input  value="編集" type="submit"/>
+	                		</form>
+	                	</c:if>
 			        </div>
 			    </c:forEach>
 			</div>
