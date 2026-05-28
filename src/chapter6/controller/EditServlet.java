@@ -81,7 +81,7 @@ public class EditServlet extends HttpServlet {
 
 		if (!isValidEditText(editText, errorMessages)) {
             session.setAttribute("errorMessages", errorMessages);
-            response.sendRedirect("./");
+            request.getRequestDispatcher("edit.jsp").forward(request, response);
             return;
 		}
 

@@ -11,6 +11,15 @@
     <link href="./css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<c:if test="${ not empty errorMessages }">
+        <div class="errorMessages">
+            <ul>
+                <c:forEach items="${errorMessages}" var="errorMessage">
+                    <li><c:out value="${errorMessage}" />
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
 	<form action="edit" method="post">
          つぶやき<br />
          <input type="hidden" name="editMessageId" value="${editMessage.id}">
