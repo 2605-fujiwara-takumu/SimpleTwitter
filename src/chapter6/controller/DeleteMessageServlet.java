@@ -61,7 +61,7 @@ public class DeleteMessageServlet extends HttpServlet {
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	String errorMessage = "不正なパラメータが入力されました。";
-    	Message message = new MessageService().selectText(deleteMessageId);
+    	Message message = new MessageService().selectMessage(deleteMessageId);
 
         if(StringUtils.isEmpty(deleteMessageId)) {
        	 errorMessages.add(errorMessage);

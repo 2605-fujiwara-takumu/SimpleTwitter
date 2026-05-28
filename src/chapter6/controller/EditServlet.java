@@ -53,7 +53,7 @@ public class EditServlet extends HttpServlet {
             return;
 	  }
 
-	  Message message = new MessageService().selectText(messageId);
+	  Message message = new MessageService().selectMessage(messageId);
 
 	  request.setAttribute("editMessage", message);
 	  request.getRequestDispatcher("edit.jsp").forward(request, response);
@@ -92,7 +92,7 @@ public class EditServlet extends HttpServlet {
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	String errorMessage = "不正なパラメータが入力されました。";
-    	Message message = new MessageService().selectText(messageId);
+    	Message message = new MessageService().selectMessage(messageId);
 
          if(StringUtils.isEmpty(messageId)) {
         	 errorMessages.add(errorMessage);

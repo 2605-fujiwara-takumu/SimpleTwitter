@@ -89,7 +89,7 @@ public class MessageService {
           }
       }
 
-    public Message selectText(String messageId) {
+    public Message selectMessage(String messageId) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
