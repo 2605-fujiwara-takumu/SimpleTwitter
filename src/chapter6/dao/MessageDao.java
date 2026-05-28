@@ -65,25 +65,29 @@ public class MessageDao {
         }
     }
 
-    public String selectText(Connection connection, String editMessageId) {
+    public Message select(Connection connection, String messageId) {
     	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
     	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	PreparedStatement ps = null;
     	try {
-    		String sql = " SELECT text FROM messages WHERE id= ?";
-    		String text = "";
+    		String sql = " SELECT * FROM messages WHERE id= ?";
 
     		ps = connection.prepareStatement(sql);
-            ps.setString(1,editMessageId);
+            ps.setString(1,messageId);
 
             ResultSet rs = ps.executeQuery();
 
+            Message message = new Message();
             if (rs.next()) {
-                text = rs.getString("text");
+                message.setId(rs.getInt("id"));
+                message.setUserId(rs.getInt("user_id"));
+                message.setText(rs.getString("text"));
+                message.setCreatedDate(rs.getTimestamp("created_date"));
+                message.setUpdatedDate(rs.getTimestamp("updated_date"));
             }
 
-            return text;
+            return message;
         } catch (SQLException e) {
 		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
             throw new SQLRuntimeException(e);
@@ -113,7 +117,7 @@ public class MessageDao {
 
     }
 
-    public void edit(Connection connection, Message editMessage) {
+    public void update(Connection connection, Message editMessage) {
     	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
     	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
@@ -132,32 +136,5 @@ public class MessageDao {
         } finally {
             close(ps);
         }
-    }
-
-    public boolean isValidId(Connection connection, String messageId) {
-    	log.info(new Object(){}.getClass().getEnclosingClass().getName() +
-    	" : " + new Object(){}.getClass().getEnclosingMethod().getName());
-
-    	PreparedStatement ps = null;
-    	boolean result = false;
-    	try {
-    		String sql = "SELECT id FROM messages WHERE id= ?";
-
-    		ps = connection.prepareStatement(sql);
-            ps.setString(1, messageId);
-
-            ResultSet rs = ps.executeQuery();
-
-            if(rs.next()) {
-            	result = true;
-            }
-
-        } catch (SQLException e) {
-		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
-            throw new SQLRuntimeException(e);
-        } finally {
-            close(ps);
-        }
-    	return result;
     }
 }

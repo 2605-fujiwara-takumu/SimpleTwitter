@@ -43,6 +43,4 @@ public class Message implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-
-
 }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
+import chapter6.beans.Message;
 import chapter6.logging.InitApplication;
 import chapter6.service.MessageService;
 
@@ -60,12 +61,13 @@ public class DeleteMessageServlet extends HttpServlet {
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	String errorMessage = "不正なパラメータが入力されました。";
+    	Message message = new MessageService().selectText(deleteMessageId);
 
         if(StringUtils.isEmpty(deleteMessageId)) {
        	 errorMessages.add(errorMessage);
         } else if(!deleteMessageId.matches("^[0-9]+$")) {
        	 errorMessages.add(errorMessage);
-        } else if(!new MessageService().isValidId(deleteMessageId)) {
+        } else if(message.getId() == 0) {
        	 errorMessages.add(errorMessage);
         }
 

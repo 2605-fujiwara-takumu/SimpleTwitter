@@ -43,25 +43,19 @@ public class EditServlet extends HttpServlet {
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-
 	  HttpSession session = request.getSession();
       List<String> errorMessages = new ArrayList<String>();
 
-	  String editMessageId = request.getParameter("editMessageId");
-	  if (!isValidId(editMessageId, errorMessages)) {
+	  String messageId = request.getParameter("editMessageId");
+	  if (!isValidId(messageId, errorMessages)) {
             session.setAttribute("errorMessages", errorMessages);
             response.sendRedirect("./");
             return;
 	  }
 
-	  String text = new MessageService().selectText(editMessageId);
+	  Message message = new MessageService().selectText(messageId);
 
-
-	  Message editMessage = new Message();
-	  editMessage.setId(Integer.parseInt(editMessageId));
-	  editMessage.setText(text);
-
-	  request.setAttribute("editMessage", editMessage);
+	  request.setAttribute("editMessage", message);
 	  request.getRequestDispatcher("edit.jsp").forward(request, response);
     }
 
@@ -73,14 +67,13 @@ public class EditServlet extends HttpServlet {
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
-		HttpSession session = request.getSession();
 		List<String> errorMessages = new ArrayList<String>();
 
 		String editText = request.getParameter("editText");
 		String editMessageId = request.getParameter("editMessageId");
 
 		if (!isValidEditText(editText, errorMessages)) {
-            session.setAttribute("errorMessages", errorMessages);
+			request.setAttribute("errorMessages", errorMessages);
             request.getRequestDispatcher("edit.jsp").forward(request, response);
             return;
 		}
@@ -89,7 +82,7 @@ public class EditServlet extends HttpServlet {
 		editMessage.setId(Integer.parseInt(editMessageId));
 		editMessage.setText(editText);
 
-		new MessageService().edit(editMessage);
+		new MessageService().update(editMessage);
 		response.sendRedirect("./");
     }
 
@@ -99,12 +92,13 @@ public class EditServlet extends HttpServlet {
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
     	String errorMessage = "不正なパラメータが入力されました。";
+    	Message message = new MessageService().selectText(messageId);
 
          if(StringUtils.isEmpty(messageId)) {
         	 errorMessages.add(errorMessage);
          } else if(!messageId.matches("^[0-9]+$")) {
         	 errorMessages.add(errorMessage);
-         } else if(!new MessageService().isValidId(messageId)) {
+         } else if(message.getId() == 0) {
         	 errorMessages.add(errorMessage);
          }
 

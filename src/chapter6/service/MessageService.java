@@ -89,7 +89,7 @@ public class MessageService {
           }
       }
 
-    public String selectText(String editMessageId) {
+    public Message selectText(String messageId) {
 
 	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
         " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -98,10 +98,10 @@ public class MessageService {
         try {
             connection = getConnection();;
 
-            String text = new MessageDao().selectText(connection, editMessageId);
+            Message message = new MessageDao().select(connection, messageId);
             commit(connection);
 
-            return text;
+            return message;
         } catch (RuntimeException e) {
             rollback(connection);
 		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
@@ -138,7 +138,7 @@ public class MessageService {
           }
       }
 
-    public void edit(Message editMessage) {
+    public void update(Message editMessage) {
 
   	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
           " : " + new Object(){}.getClass().getEnclosingMethod().getName());
@@ -146,7 +146,7 @@ public class MessageService {
           Connection connection = null;
           try {
               connection = getConnection();
-              new MessageDao().edit(connection, editMessage);
+              new MessageDao().update(connection, editMessage);
               commit(connection);
           } catch (RuntimeException e) {
               rollback(connection);
@@ -159,30 +159,5 @@ public class MessageService {
           } finally {
               close(connection);
           }
-      }
-
-    public boolean isValidId(String messageId) {
-
-	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
-        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
-
-        Connection connection = null;
-        boolean result = false;
-        try {
-            connection = getConnection();
-            result = new MessageDao().isValidId(connection, messageId);
-            commit(connection);
-        } catch (RuntimeException e) {
-            rollback(connection);
-		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
-            throw e;
-        } catch (Error e) {
-            rollback(connection);
-		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
-            throw e;
-        } finally {
-            close(connection);
-        }
-        return result;
       }
 }
